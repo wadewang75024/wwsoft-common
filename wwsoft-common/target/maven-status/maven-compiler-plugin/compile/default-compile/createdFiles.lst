@@ -1,1 +1,3 @@
+com\wwsoft\common\security\MyClaim.class
 com\wwsoft\common\security\WwsoftAuthenticator.class
+com\wwsoft\common\security\WwsoftBaseAuthenticator.class

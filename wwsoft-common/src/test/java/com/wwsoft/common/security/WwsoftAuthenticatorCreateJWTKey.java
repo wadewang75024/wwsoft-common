@@ -1,9 +1,17 @@
 package com.wwsoft.common.security;
 
-
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * This test program can be used to create an encrypted JWT key.  
+ * Otherwise, decrypt method will fail if the raw string like the one specified in ORIGINAL_JWT_KEY below.
+ * The one below is generated with echo -n "somevalue" | openssl sha512 -hmac "somekey", which is given
+ * in "https://stackoverflow.com/questions/33960565/how-to-generate-a-hs512-secret-key-to-use-with-jwt"
+ * 
+ * @author wang
+ *
+ */
 public class WwsoftAuthenticatorCreateJWTKey {
 	
 	private WwsoftAuthenticator wwsoftAuthenticator;

@@ -1,0 +1,3 @@
+com\wwsoft\common\security\WwsoftAuthenticatorCreateToken.class
+com\wwsoft\common\security\WwsoftAuthenticatorCreateJWTKey.class
+com\wwsoft\common\security\WwsoftAuthenticatorUseToken.class

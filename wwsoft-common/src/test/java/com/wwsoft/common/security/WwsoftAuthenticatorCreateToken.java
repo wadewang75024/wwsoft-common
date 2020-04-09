@@ -7,6 +7,12 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * This test program uses the JWT key generated with WwsoftAuthenticatorCreateJWTKey test program to
+ * create a JWT token. The JWT_KEY below is the output from WwsoftAuthenticatorCreateJWTKey.
+ * @author wang
+ *
+ */
 public class WwsoftAuthenticatorCreateToken {
 	
 	private WwsoftAuthenticator wwsoftAuthenticator;
