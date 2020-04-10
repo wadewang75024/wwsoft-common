@@ -11,12 +11,16 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.SignatureException;
 
+@AuthenticatorSetup(jwt_key_prefix = "APP_", 
+jwt_expiration_min = 3000000, 
+jwt_issuer = "wwsoft", jwt_subject = "wwsoft-app", 
+jwt_subject_link = "wwsoft-app", 
+expected_Claims = { @ExpectedClaim(claim = MyClaim.CLAIM_KEY_BASIC_INFO) })
 public class WwsoftAuthenticator extends WwsoftBaseAuthenticator {
-	private final static String JWT_SUBJECT_LINK="wwsoft-common-securtiy";
-	private final static int JWT_EXPIRATION_MIN=3000000;
-	private final static String JWT_ISSUER="wwsoft";
-	private final static String JWT_KEY="JWT_KEY";
+	
+	private AuthenticatorSetup authenticatorAnnotation;
 	
 	/**
 	 * This private method reads the JWT_KEY from system properties.
@@ -31,7 +35,7 @@ public class WwsoftAuthenticator extends WwsoftBaseAuthenticator {
 	 */
 	private String getJwtKey() throws InvalidKeyException, UnsupportedEncodingException, NoSuchAlgorithmException,
 		NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
-		return decrypt(System.getProperty(JWT_KEY));
+		return decrypt(System.getProperty(authenticatorAnnotation.jwt_key_prefix() + "JWT_KEY"));
 		//return System.getProperty(JWT_KEY);
 	} 
 	
@@ -50,6 +54,7 @@ public class WwsoftAuthenticator extends WwsoftBaseAuthenticator {
 	public String getId(String token)
 			throws InvalidKeyException, UnsupportedEncodingException, NoSuchAlgorithmException, NoSuchPaddingException,
 			InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
+		checkAnnotation();
 		return getId(getJwtKey(), token);
 	}	
 	
@@ -88,7 +93,15 @@ public class WwsoftAuthenticator extends WwsoftBaseAuthenticator {
 	public String appendClaim(String oldToken, String field, Object value)
 			throws InvalidKeyException, UnsupportedEncodingException, NoSuchAlgorithmException, NoSuchPaddingException,
 			InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
-		return getNewToken(getJwtKey(), JWT_SUBJECT_LINK, JWT_ISSUER, JWT_EXPIRATION_MIN, oldToken, field, value);
+		return getNewToken(getJwtKey(), authenticatorAnnotation.jwt_subject(), authenticatorAnnotation.jwt_issuer(),
+				authenticatorAnnotation.jwt_expiration_min(), oldToken, field, value);
+	}
+	
+	private void checkAnnotation() {
+		Class<?> thisClass = this.getClass();
+		authenticatorAnnotation = thisClass.getAnnotation(AuthenticatorSetup.class);
+		if (authenticatorAnnotation == null)
+			throw new SignatureException("Missing authenticator annotation.");
 	}
 
 	/**
@@ -104,10 +117,17 @@ public class WwsoftAuthenticator extends WwsoftBaseAuthenticator {
 	 * @throws IllegalBlockSizeException
 	 * @throws BadPaddingException
 	 */
-	public String createToken(String userId, HashMap<String, Object> claims) 
+	public String createToken(String userId, boolean subjectLink, HashMap<String, Object> claims) 
 			throws InvalidKeyException, UnsupportedEncodingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {	
-		return createToken(userId, getJwtKey(), JWT_SUBJECT_LINK, JWT_ISSUER, JWT_EXPIRATION_MIN, claims);
+		checkAnnotation();
+		String subject;
+		if (subjectLink)
+			subject = authenticatorAnnotation.jwt_subject_link();
+		else
+			subject = authenticatorAnnotation.jwt_subject();
+		return createToken(userId, getJwtKey(), subject, authenticatorAnnotation.jwt_issuer(), 
+						   authenticatorAnnotation.jwt_expiration_min(), claims);
 	}
 	
 }

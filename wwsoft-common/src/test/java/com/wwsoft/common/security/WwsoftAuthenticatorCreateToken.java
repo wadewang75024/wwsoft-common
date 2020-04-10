@@ -20,12 +20,12 @@ public class WwsoftAuthenticatorCreateToken {
 	@Before
 	public void setUp() throws Exception {
 		wwsoftAuthenticator = new WwsoftAuthenticator();
-		System.setProperty("JWT_KEY", "/7UzrtXTov8TQU4UIh4usWBKlV2jfv/9N3eshGDSHbWTHiFvJPrt18bIKNU0uyjGhNSJMx0XZEdpz5LitNNqIes2r4pBP9rDZdstJG7syqIhYTLoKbVNB3s8OAOpf9kc5wVCEK9KmWmqNJmfQMyzgnpvIS5PCl1HtuY7BycKvBLBojcyi+RXSxwWE/zNXJld");
+		System.setProperty("APP_JWT_KEY", "/7UzrtXTov8TQU4UIh4usWBKlV2jfv/9N3eshGDSHbWTHiFvJPrt18bIKNU0uyjGhNSJMx0XZEdpz5LitNNqIes2r4pBP9rDZdstJG7syqIhYTLoKbVNB3s8OAOpf9kc5wVCEK9KmWmqNJmfQMyzgnpvIS5PCl1HtuY7BycKvBLBojcyi+RXSxwWE/zNXJld");
 	}
 	
 	@Test
 	public void testCreateToken() throws Exception {		
-		String token = wwsoftAuthenticator.createToken("wwang", null);
+		String token = wwsoftAuthenticator.createToken("wwang", true, null);
 		token = wwsoftAuthenticator.appendClaim(token, MyClaim.CLAIM_KEY_ROLE.getEclaimValue(), "Test");
 		token = wwsoftAuthenticator.appendClaim(token, MyClaim.CLAIM_KEY_BASIC_INFO.getEclaimValue(), getBasicInfo("HY"));
 		
